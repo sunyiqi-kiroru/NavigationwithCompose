@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
@@ -11,12 +12,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.navigationwithcompose.ui.theme.NavigationwithComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -54,22 +58,28 @@ fun MyNavController(
                     navController.navigate("friendsList")
                 },
                 onNavigateToProfile = {
-                    navController.navigate("profile")
+                    navController.navigate("profile/user007fromHome")
                 }
             )
         }
-        composable("profile") {
+        composable(
+            route = "profile/{userId}",
+            arguments = listOf(navArgument("userId") {
+                type = NavType.StringType
+            })
+        ) { backStackEntry ->
             ProfileScreen(
                 onNavigateToFriends = {
                     navController.navigate("friendsList") {
                         popUpTo("home")
                     }
-                }
+                },
+                userId = backStackEntry.arguments?.getString("userId")
             )
         }
         composable("friendsList") {
             FriendsListScreen {
-                navController.navigate("profile") {
+                navController.navigate("profile/user007fromFriendsList") {
                     popUpTo("home")
                 }
             }
@@ -79,10 +89,19 @@ fun MyNavController(
 
 @Composable
 fun ProfileScreen(
-    onNavigateToFriends: () -> Unit
+    onNavigateToFriends: () -> Unit,
+    userId: String?
 ) {
-    Button(onClick = onNavigateToFriends) {
-        Text(text = "See friends list")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.onPrimary)
+    ) {
+        Button(onClick = onNavigateToFriends) {
+            Text(text = "See friends list")
+        }
+        if (userId.isNullOrEmpty()) return@Column
+        Text(text = "My userId is $userId")
     }
 }
 
@@ -106,10 +125,10 @@ fun HomeScreen(
             .background(color = MaterialTheme.colorScheme.background)
     ) {
         Button(onClick = onNavigateToFriends) {
-            Text(text = "To Profile Screen")
+            Text(text = "See friends list")
         }
         Button(onClick = onNavigateToProfile) {
-            Text(text = "See friends list")
+            Text(text = "To Profile Screen")
         }
     }
 }
@@ -118,6 +137,6 @@ fun HomeScreen(
 @Composable
 fun ProfileScreenPreview() {
     NavigationwithComposeTheme {
-        ProfileScreen({ })
+        ProfileScreen({ },"user001")
     }
 }
