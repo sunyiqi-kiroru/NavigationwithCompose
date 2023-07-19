@@ -58,15 +58,13 @@ fun MyNavController(
                     navController.navigate("friendsList")
                 },
                 onNavigateToProfile = {
-                    navController.navigate("profile/user007fromHome")
+                    navController.navigate("profile?userId=user007fromHome")
                 }
             )
         }
         composable(
-            route = "profile/{userId}",
-            arguments = listOf(navArgument("userId") {
-                type = NavType.StringType
-            })
+            route = "profile?userId={userId}",
+            arguments = listOf(navArgument("userId") { defaultValue = "userid000" })
         ) { backStackEntry ->
             ProfileScreen(
                 onNavigateToFriends = {
@@ -79,7 +77,7 @@ fun MyNavController(
         }
         composable("friendsList") {
             FriendsListScreen {
-                navController.navigate("profile/user007fromFriendsList") {
+                navController.navigate("profile") {
                     popUpTo("home")
                 }
             }
