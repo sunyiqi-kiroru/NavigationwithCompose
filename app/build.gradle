@@ -71,12 +71,15 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion "1.4.6"
     }
-
     packagingOptions {
-        exclude "META-INF/licenses/**"
-        exclude "META-INF/AL2.0"
-        exclude "META-INF/LGPL2.1"
+        jniLibs {
+            excludes += ['META-INF/licenses/**']
+        }
+        resources {
+            excludes += ['META-INF/licenses/**', 'META-INF/AL2.0', 'META-INF/LGPL2.1']
+        }
     }
+
 }
 
 dependencies {
@@ -94,13 +97,15 @@ dependencies {
     implementation "androidx.compose.foundation:foundation"
     implementation "androidx.compose.material:material"
     implementation "androidx.compose.material:material-icons-extended"
-    implementation "androidx.activity:activity-compose:1.7.1"
+    implementation "androidx.activity:activity-compose:1.7.2"
+    implementation "androidx.navigation:navigation-compose:2.6.0"
     debugImplementation "androidx.compose.ui:ui-tooling"
 
     // Testing dependencies
     androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:3.5.1"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
+    androidTestImplementation "androidx.navigation:navigation-testing:2.6.0"
 
     // Compose testing dependencies
     androidTestImplementation "androidx.compose.ui:ui-test-junit4"
